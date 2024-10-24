@@ -34,7 +34,7 @@ jobs:
         run: |
           # Получаем информацию о последнем коммите
           MERGED_BRANCHES=$(git log --merges --pretty=format:'%s' -n 10 | grep -oP 'Merge pull request #\K[0-9]+')
-          echo "MERGED_BRANCHES=${MERGED_BRANCHES}" >> $GITHUB_EN
+          echo "MERGED_BRANCHES=${MERGED_BRANCHES}" >> $GITHUB_ENV
 
       - name: Send notification to Telegram
         if: always()
