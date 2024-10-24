@@ -29,26 +29,6 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Get merged branches
-        id: get-branches
-        run: |
-          git fetch --all
-          echo "Fetching merged branches..."
-          
-          # Получаем смерженные коммиты
-          MERGED_BRANCHES=$(git log --merges --pretty=format:'%s' -n 10 | grep -oP 'Merge pull request #\K[0-9]+')
-
-          # Проверяем, есть ли смерженные ветки
-          if [[ $? -ne 0 ]]; then
-            echo "Error occurred while fetching merged branches."
-            MERGED_BRANCHES="None"
-          elif [[ -z "$MERGED_BRANCHES" ]]; then
-            echo "No merged branches found."
-            MERGED_BRANCHES="None"
-          fi
-
-          echo "MERGED_BRANCHES=${MERGED_BRANCHES}" >> $GITHUB_ENV
-
       - name: Send notification to Telegram
         if: always()
         run: |
@@ -62,5 +42,5 @@ jobs:
 
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
             -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
-            -d text="🚀 CI Build Notification%0A%0A📂 Repository: MlDwan12/investment (https://github.com/MlDwan12/investment)%0A${STATUS_ICON} Status: ${STATUS}%0A🌿 Merged branches: ${{ env.MERGED_BRANCHES }}%0A%0A🔍 *View Details* (https://github.com/MlDwan12/investment/actions/runs/${{ github.run_id }})" \
-            -d parse_mode="Markdown"s
+            -d text="🚀 CI Build Notification%0A%0A📂 Repository: MlDwan12/investment (https://github.com/MlDwan12/investment)%0A${STATUS_ICON} Status: ${STATUS}%0A🔍 *View Details* (https://github.com/MlDwan12/investment/actions/runs/${{ github.run_id }})" \
+            -d parse_mode="Markdown"
