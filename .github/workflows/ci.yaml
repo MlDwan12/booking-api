@@ -6,6 +6,7 @@ on:
       - master
       - prod
       - test
+      - add-ci
   pull_request:
     branches:
       - master
@@ -27,6 +28,13 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
+
+      - name: Get merged branches
+        id: get-branches
+        run: |
+          # Получаем информацию о последнем коммите
+          MERGED_BRANCHES=$(git log --merges --pretty=format:'%s' -n 10 | grep -oP 'Merge pull request #\K[0-9]+')
+          echo "MERGED_BRANCHES=${MERGED_BRANCHES}" >> $GITHUB_EN
 
       - name: Send notification to Telegram
         if: always()
