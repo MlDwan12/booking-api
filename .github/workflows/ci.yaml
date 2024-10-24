@@ -39,7 +39,10 @@ jobs:
       - name: Send notification to Telegram
         if: always()
         run: |
+          # Определяем статус
+          STATUS=$(if [[ "${{ job.status }}" == "success" ]]; then echo "success"; else echo "failure"; fi)
+
           curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
             -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
-            -d text="🚀 CI Build Notification%0A%0A📂 Repository: MlDwan12/investment (https://github.com/MlDwan12/investment)%0A✅ Status: success%0A 🌿 Merged branches: ${MERGED_BRANCHES}%0A%0A🔍 *View Details* (https://github.com/MlDwan12/investment/actions/runs/11317293217)" \
+            -d text="🚀 CI Build Notification%0A%0A📂 Repository: MlDwan12/investment (https://github.com/MlDwan12/investment)%0A✅ Status: ${STATUS}%0A🌿 Merged branches: ${{ env.MERGED_BRANCHES }}%0A%0A🔍 *View Details* (https://github.com/MlDwan12/investment/actions/runs/${{ github.run_id }})" \
             -d parse_mode="Markdown"
